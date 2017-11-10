@@ -37,5 +37,3 @@ static void clamp_bench(benchmark::State &state)
 }
 
 BENCHMARK(clamp_bench)->Range(1 << 10, 1 << 20)->ReportAggregatesOnly(true);
-BENCHMARK(clamp_bench)->Range(1 << 10, 1 << 20)->ReportAggregatesOnly(true);
-BENCHMARK_MAIN();
