@@ -3,7 +3,7 @@ project (MicroBenchmark)
 
 option(USE_CLANG "build application with clang" ON) # OFF is the default
 
-SET(CMAKE_CXX_FLAGS "-std=c++17 -O3 -march=native -fno-omit-frame-pointer")
+SET(CMAKE_CXX_FLAGS "-std=c++17 -O3 -march=native -g3 -ggdb -fno-omit-frame-pointer")
 SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
 
 file(GLOB_RECURSE SRCS src/*/*.cpp src/*/*.h)
