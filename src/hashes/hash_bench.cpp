@@ -181,12 +181,12 @@ static void hash_bench_darbyhash_baseline(benchmark::State &state)
     state.SetLabel(std::to_string(state.range(0)));
 }
 
-int32_t range_begin = 62;
-int32_t range_end = 67;
+int32_t range_begin = 10;
+int32_t range_end = 1024;
 
 BENCHMARK(hash_bench_xxh64)->Range(range_begin, range_end)->ReportAggregatesOnly(true);
 //BENCHMARK(hash_bench_t1ha)->Range(range_begin, range_end)->ReportAggregatesOnly(true);
 //BENCHMARK(hash_bench_darbyhash)->Range(range_begin, range_end)->ReportAggregatesOnly(true);
 //BENCHMARK(hash_bench_darbyhash_noavx)->Range(range_begin, range_end)->ReportAggregatesOnly(true);
-BENCHMARK(hash_bench_darbyhash_boring)->DenseRange(range_begin, range_end)->ReportAggregatesOnly(true);
-BENCHMARK(hash_bench_darbyhash_baseline)->DenseRange(range_begin, range_end)->ReportAggregatesOnly(true);
+BENCHMARK(hash_bench_darbyhash_boring)->Range(range_begin, range_end)->ReportAggregatesOnly(true);
+BENCHMARK(hash_bench_darbyhash_baseline)->Range(range_begin, range_end)->ReportAggregatesOnly(true);
