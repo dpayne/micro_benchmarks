@@ -393,7 +393,7 @@ darbyhash_baseline(const void *data, size_t len, uint64_t seed) {
 }
 
 static uint64_t
-darbyhash_512(const void *data, size_t len, uint64_t seed) {
+darbyhash_boring(const void *data, size_t len, uint64_t seed) {
   uint64_t a = seed;
   uint64_t b = len;
 
@@ -438,104 +438,6 @@ darbyhash_512(const void *data, size_t len, uint64_t seed) {
     while (v1 < detent) {
       __m128i v0y = _mm_add_epi64(y, _mm_loadu_si128(v1++));
       __m128i v1x = _mm_sub_epi64(x, _mm_loadu_si128(v1++));
-      x = _mm_aesdec_si128(x, v0y);
-      y = _mm_aesdec_si128(y, v1x);
-    }
-
-    x = _mm_add_epi64(_mm_aesdec_si128(x, _mm_aesenc_si128(y, x)), y);
-    a = _mm_cvtsi128_si64(x);
-    b = _mm_extract_epi64(x, 1);
-
-    v = (const uint64_t *)data;
-  }
-  else {
-      v = (const uint64_t *)data;
-      if (unlikely(need_align) && len > 8)
-        v = (const uint64_t *)memcpy(&align, v, len);
-  }
-
-  switch (len) {
-  default:
-    b += darbyhash_mux64(darbyhash_fetch64_le(v++), darbyhash_p4);
-  case 24:
-  case 23:
-  case 22:
-  case 21:
-  case 20:
-  case 19:
-  case 18:
-  case 17:
-    a += darbyhash_mux64(darbyhash_fetch64_le(v++), darbyhash_p3);
-  case 16:
-  case 15:
-  case 14:
-  case 13:
-  case 12:
-  case 11:
-  case 10:
-  case 9:
-    b += darbyhash_mux64(darbyhash_fetch64_le(v++), darbyhash_p2);
-  case 8:
-  case 7:
-  case 6:
-  case 5:
-  case 4:
-  case 3:
-  case 2:
-  case 1:
-    a += darbyhash_mux64(darbyhash_tail64_le(v, len), darbyhash_p1);
-  case 0:
-    return darbyhash_mux64(darbyhash_rot64(a + b, darbyhash_s1), darbyhash_p4) + darbyhash_mix(a ^ b, darbyhash_p0);
-  }
-}
-
-static uint64_t
-darbyhash_boring(const void *data, size_t len, uint64_t seed) {
-  uint64_t a = seed;
-  uint64_t b = len;
-
-  const int need_align = (((uintptr_t)data) & 7) != 0 && !UNALIGNED_OK;
-  uint64_t align[4];
-  const uint64_t *v;
-  if (unlikely(len > 32)) {
-    __m128i x = _mm_set_epi64x(a, b);
-    __m128i y = _mm_aesenc_si128(x, _mm_set_epi64x(darbyhash_p0, darbyhash_p1));
-
-    const __m128i *v1 = (const __m128i *)data;
-    const __m128i *const detent =
-        (const __m128i *)((const uint8_t *)data + (len & ~15ul));
-    data = detent;
-
-    if (len & 16) {
-      x = _mm_add_epi64(x, _mm_loadu_si128(v1++));
-      y = _mm_aesenc_si128(x, y);
-    }
-    len &= 15;
-
-    if (v1 + 7 < detent) {
-      __m128i salt = y;
-      do {
-        __m128i t = _mm_aesenc_si128(_mm_loadu_si128(v1++), salt);
-        t = _mm_aesdec_si128(t, _mm_loadu_si128(v1++));
-        t = _mm_aesdec_si128(t, _mm_loadu_si128(v1++));
-        t = _mm_aesdec_si128(t, _mm_loadu_si128(v1++));
-
-        t = _mm_aesdec_si128(t, _mm_loadu_si128(v1++));
-        t = _mm_aesdec_si128(t, _mm_loadu_si128(v1++));
-        t = _mm_aesdec_si128(t, _mm_loadu_si128(v1++));
-        t = _mm_aesdec_si128(t, _mm_loadu_si128(v1++));
-
-        salt = _mm_add_epi64(salt, _mm_set_epi64x(darbyhash_p2, darbyhash_p3));
-        t = _mm_aesenc_si128(x, t);
-        x = _mm_add_epi64(y, x);
-        y = t;
-      } while (v1 + 7 < detent);
-    }
-
-    __m512i  * v512 = (__m512i *) v1;
-    while (v1 < detent) {
-      __m512i v0y = _mm512_add_epi64(y, v512++);
-      __m512i v1x = _mm_sub_epi64(x, v512++));
       x = _mm_aesdec_si128(x, v0y);
       y = _mm_aesdec_si128(y, v1x);
     }
