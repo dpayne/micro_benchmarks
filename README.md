@@ -1,6 +1,10 @@
 # micro_benchmarks
 Various micro benchmarks
 
+# Dependencies
+
+clang, google benchmark https://github.com/google/benchmark
+
 # Useful commands
 
 Re-build and run a single benchmark
