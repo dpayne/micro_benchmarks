@@ -9,7 +9,7 @@ clang, google benchmark https://github.com/google/benchmark
 
 Re-build and run a single benchmark
 
-    rm -rf build; mkdir build; cd build; cmake ..; make VERBOSE=1; cd ..; ./build/MicroBenchmark --benchmark_filter=cachebench
+    rm -rf build; mkdir build; cd build; cmake ..; make VERBOSE=1; cd ..; ./build/MicroBenchmark
 
 Run a specific benchmark with a specific range
 
